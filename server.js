@@ -21,7 +21,7 @@ const connection = mysql.createPool({
 
 app.use(cors());
 
-app.listen(32223, function(){
+app.listen(3000, function(){
     console.log("Start Server");
 });
 
@@ -34,24 +34,48 @@ app.all('/*', function(req, res, next) {
 
 
 app.get("/api/test", (req, res) => {
-    res.json({"message" : "test api"});
+    res.json({"message" : "hello world"});
 });
 
 app.get("/api/beacon", (req, res) => {
-    var query = connection.query("SELECT * FROM beacon")
-    res.json(query);
+    connection.query("SELECT * FROM beacon;", function (error, result) {
+        if (error) {
+            console.log(error);
+            res.status(400).json({message: error.message});
+        } else {
+            console.log('result', result);
+            res.json({
+                    'status': 'success',
+                    'result' : result
+                }
+            );
+        }
+    });
+});
+
+app.get("/api/arduino", (req, res) => {
+    connection.query("SELECT * FROM arduino;", function (error, result) {
+        if (error) {
+            console.log(error);
+            res.status(400).json({message: error.message});
+        } else {
+            console.log('result', result);
+            res.json({
+                    'status': 'success',
+                    'result' : result
+                }
+            );
+        }
+    });
 });
 
 app.post("/api/beacon", (req, res) => {
-    var body = req.body
-
-    // var sql = 'INSERT INTO beacon' + '(id, name, connect_time, disconnect_time)' + 'VALUES (?,?,?,?)';
-    // var values = [req.body.id, req.body.name, req.body.connect_time, req.body.disconnect_time];
-
-    connection.query("INSERT INTO beacon (id, name, connect_time, disconnect_time) VALUES (?,?,?,?)", [body.id, body.name, body.connect_time, body.disconnect_time], function (error, result) {
+    const sql = 'INSERT INTO beacon' + '(id, name, connect_time, disconnect_time)' + 'VALUES (?,?,?,?)';
+    const values = [req.body.id, req.body.name, req.body.connect_time, req.body.disconnect_time];
+    connection.query(sql, values, function (error, result) {
             if (error) {
                 console.log(error);
-                res.status(400).json({message: err.message});
+                res.status(400).json({message: error.message});
             } else {
                 console.log('result', result);
                 res.json({
@@ -64,15 +88,16 @@ app.post("/api/beacon", (req, res) => {
 });
 
 app.post("/api/arduino", (req, res) => {
-    var sql = 'INSERT INTO beacon' + '(id, status, real_time, start_time, end_time)' + 'VALUES (?,?,?,?,?)';
-    var values = [req.body.id, req.body.status, req.body.real_time, req.body.start_time, req.body.end_time];
-    connection.query(sql, values, function (error) {
+    const sql = 'INSERT INTO arduino' + '(id, status, real_time, start_time, end_time)' + 'VALUES (?,?,?,?,?)';
+    const values = [req.body.id, req.body.status, req.body.real_time, req.body.start_time, req.body.end_time];
+    connection.query(sql, values, function (error, result) {
         if (error) {
             console.log(error);
             res.status(400).json({"status" : "400", message: error.message});
         } else {
+            console.log('result', result);
             res.json({
-                'server_status': 'success',
+                'status': 'success',
             });
         }
     });
