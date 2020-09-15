@@ -81,8 +81,10 @@ app.post("/api/beacon", (req, res) => {
             } else {
                 console.log('result', result);
                 res.json({
-                        'status' : 'success',
-                        'result' : result
+                        'status_code' : '200',
+                        'id' : req.body.id,
+                        'connect_time' : req.body.connect_time,
+                        'disconnect_time' : req.body.disconnect_time
                     }
                 );
             }
@@ -100,7 +102,11 @@ app.post("/api/arduino", (req, res) => {
         } else {
             console.log('result', result);
             res.json({
-                'status' : 'success',
+                'status_code' : '200',
+                'arduino_status' : req.body.status,
+                'real_time' : req.body.real_time,
+                'start_time' : req.body.start_time,
+                'end_time' : req.body.end_time
             });
         }
     });
