@@ -73,8 +73,8 @@ app.get("/api/arduino", (req, res) => {
 
 
 app.post("/api/beacon", (req, res) => {
-    const sql = 'INSERT INTO beacon' + '(id, name, connect_time, disconnect_time, start_time, end_time)' + 'VALUES (?,?,?,?,?,?)';
-    const values = [req.body.id, req.body.name, req.body.connect_time, req.body.disconnect_time, req.body.start_time, req.body.end_time];
+    const sql = 'INSERT INTO beacon' + '(id, name, connect_time, disconnect_time, start_time, end_time, status)' + 'VALUES (?,?,?,?,?,?,?)';
+    const values = [req.body.id, req.body.name, req.body.connect_time, req.body.disconnect_time, req.body.start_time, req.body.end_time, req.body.status];
     connection.query(sql, values, function (error, result) {
             if (error) {
                 console.log(error);
@@ -83,6 +83,7 @@ app.post("/api/beacon", (req, res) => {
                 console.log('result', result);
                 res.json({
                         'status_code' : '200',
+                        'status' : req.body.status,
                         'id' : req.body.id,
                         'connect_time' : req.body.connect_time,
                         'disconnect_time' : req.body.disconnect_time,
@@ -96,7 +97,7 @@ app.post("/api/beacon", (req, res) => {
 });
 
 app.post("/api/arduino", (req, res) => {
-    const sql = 'INSERT INTO arduino' + '(id, status, real_time)' + 'VALUES (?,?,?)';
+    const sql = 'INSERT INTO arduino' + '(id, real_time)' + 'VALUES (?,?)';
     const values = [req.body.id, req.body.status, req.body.real_time];
     connection.query(sql, values, function (error, result) {
         if (error) {
@@ -106,7 +107,6 @@ app.post("/api/arduino", (req, res) => {
             console.log('result', result);
             res.json({
                 'status_code' : '200',
-                'arduino_status' : req.body.status,
                 'real_time' : req.body.real_time,
             });
         }
@@ -126,12 +126,9 @@ app.put("/api/beacon/:id", function(req, res) {
                     callback(new Error("Id is empty."));
                 } else {
                     connection.getConnection(function(err, conn) {
-                        const sql = "UPDATE beacon SET name = ?, connect_time = ?, disconnect_time = ? WHERE id= " + id + ";";
-                        let param = [req.body.name, req.body.connect_time, req.body.disconnect_time, req.body.start_time, req.body.end_time];
+                        const sql = "UPDATE beacon SET name = ?, connect_time = ?, disconnect_time = ?, status = ? WHERE id= " + id + ";";
+                        let param = [req.body.name, req.body.connect_time, req.body.disconnect_time, req.body.start_time, req.body.end_time, req.body.status];
                         console.log("SQL: " + sql);
-                        console.log(req.body.name);
-                        console.log(req.body.connect_time);
-                        console.log(req.body.connect_time);
 
                         conn.query(sql, param, function(err) {
                             if (err) {
@@ -165,8 +162,8 @@ app.put("/api/arduino/:id", function(req, res) {
                     callback(new Error("Id is empty."));
                 } else {
                     connection.getConnection(function(err, conn) {
-                        const sql = "UPDATE arduino SET status = ?, real_time = ?, start_time = ?, end_time = ? WHERE id= " + id + ";";
-                        const param = [req.body.status, req.body.real_time];
+                        const sql = "UPDATE arduino SET real_time = ? WHERE id= " + id + ";";
+                        const param = [req.body.real_time];
                         console.log("SQL: " + sql);
 
                         conn.query(sql, param, function(err) {
