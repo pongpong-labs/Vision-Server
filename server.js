@@ -126,7 +126,7 @@ app.put("/api/beacon/:id", function(req, res) {
                     callback(new Error("Id is empty."));
                 } else {
                     connection.getConnection(function(err, conn) {
-                        const sql = "UPDATE beacon SET name = ?, connect_time = ?, disconnect_time = ?, status = ? WHERE id= " + id + ";";
+                        const sql = "UPDATE beacon SET name = ?, connect_time = ?, disconnect_time = ?, start_time = ?, end_time = ?, status = ? WHERE id= " + id + ";";
                         let param = [req.body.name, req.body.connect_time, req.body.disconnect_time, req.body.start_time, req.body.end_time, req.body.status];
                         console.log("SQL: " + sql);
 
