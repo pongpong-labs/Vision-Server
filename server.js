@@ -98,7 +98,7 @@ app.post("/api/beacon", (req, res) => {
 
 app.post("/api/arduino", (req, res) => {
     const sql = 'INSERT INTO arduino' + '(id, real_time)' + 'VALUES (?,?)';
-    const values = [req.body.id, req.body.status, req.body.real_time];
+    const values = [req.body.id, req.body.real_time];
     connection.query(sql, values, function (error, result) {
         if (error) {
             console.log(error);
