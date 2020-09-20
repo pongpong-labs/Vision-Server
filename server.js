@@ -47,7 +47,7 @@ app.get("/api/beacon", (req, res) => {
         } else {
             console.log('result', result);
             res.json({
-                    'status' : 'success',
+                    'status' : '200',
                     'result' : result
                 }
             );
@@ -63,12 +63,28 @@ app.get("/api/arduino", (req, res) => {
         } else {
             console.log('result', result);
             res.json({
-                    'status' : 'success',
+                    'status' : '200',
                     'result' : result
                 }
             );
         }
     });
+});
+
+
+app.get("/api/subtitles", (req, res) => {
+    connection.query("SELECT * FROM subtitles;",function (error, result) {
+        if (error) {
+            console.log(error);
+            res.statis(400).json({message: error.message});
+        } else {
+            console.log('result', result);
+            res.json({
+                'status' : '200',
+                'result' : result
+            })
+        }
+    })
 });
 
 
